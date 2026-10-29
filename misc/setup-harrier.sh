@@ -20,29 +20,40 @@ HARRIER_DIR="$BASE_DIR/Harrier"
 HARRIER_NPOC_DIR="$BASE_DIR/Harrier-NPoC"
 GEO_DATA_DIR="/data/GeoLite2"
 
-# Common download URLs for China (GitCode)
-GITCODE_BASE_URL="https://raw.gitcode.com/msmoshang/arl_files/blobs"
-GITCODE_BASE_URL_HARRIER="https://raw.gitcode.com/msmoshang/Harrier/blobs"
-GITCODE_BASE_URL_ADDF="https://raw.gitcode.com/msmoshang/ADD-Harrier-Finger/blobs"
-NUCLEI_URL_CN="$GITCODE_BASE_URL/23658ed3383635877d517345be25df36bfdf774f/nuclei_3.3.9_linux_amd64.zip"
-WIH_URL_CN="$GITCODE_BASE_URL/ca1f54e9ea46855fea153cb76fb854e870d3bd8a/wih_linux_amd64"
-NCRACK_URL_CN="$GITCODE_BASE_URL/9a6b0fbf8b9e377e1ed234347a3097c5c28ebd8d/ncrack"
-NCRACK_SERVICES_URL_CN="$GITCODE_BASE_URL/cfd6e29efb2ab97e84f346206fe5d9719f242a8f/ncrack-services"
-GEO_ASN_URL_CN="$GITCODE_BASE_URL/0737adc55cb78b6b06973d55d6012d66bcc1d219/GeoLite2-ASN.mmdb"
-GEO_CITY_URL_CN="$GITCODE_BASE_URL/cb513cf65f6b6611bd3aa6b6ca61ccbed2858ec2/GeoLite2-City.mmdb"
-ADD_FINGER_SCRIPT_URL="$GITCODE_BASE_URL_ADDF/29d142c75881c6c75d7a20bae4f5c33a5b08bf81/ADD-Harrier-finger.py"
-DEFAULT_FINGER_URL="$GITCODE_BASE_URL_HARRIER/882cce400c6038c71f168e7d2bc180fedb5ca8f0/finger.json"
-GET_PIP_SCRIPT_CN="$GITCODE_BASE_URL/fd48c7fdef802d8bb86ace74134c553f0317258c/get-pip.py"
+#-----------------------------
+# Download URLs for third-party tools
+#-----------------------------
+# Harrier project repositories
+HARRIER_REPO="https://github.com/Excalibra/Harrier"
+# NPoC plugin package (kept at the original upstream author for now)
+HARRIER_NPOC_REPO="https://github.com/Aabyss-Team/ARL-NPoC"
 
-# Common download URLs outside China (GitHub/Git.io)
-GITHUB_BASE_URL="https://raw.githubusercontent.com/msmoshang/arl_files/master"
+# Prebuilt third-party binaries hosted in this project's releases
+# (adjust to wherever the wih/ncrack binaries are hosted)
+BIN_RELEASE_URL="https://github.com/Excalibra/Harrier/releases/download/tools"
+
 NUCLEI_URL="https://github.com/projectdiscovery/nuclei/releases/download/v3.3.9/nuclei_3.3.9_linux_amd64.zip"
-WIH_URL="$GITHUB_BASE_URL/wih/wih_linux_amd64"
-NCRACK_URL="$GITHUB_BASE_URL/ncrack"
-NCRACK_SERVICES_URL="$GITHUB_BASE_URL/ncrack-services"
-GEO_ASN_URL="https://git.io/GeoLite2-ASN.mmdb" 
-GEO_CITY_URL="https://git.io/GeoLite2-City.mmdb"
+NUCLEI_URL_CN="$NUCLEI_URL"
+
+WIH_URL="$BIN_RELEASE_URL/wih_linux_amd64"
+WIH_URL_CN="$WIH_URL"
+
+NCRACK_URL="$BIN_RELEASE_URL/ncrack"
+NCRACK_URL_CN="$NCRACK_URL"
+
+NCRACK_SERVICES_URL="$BIN_RELEASE_URL/ncrack-services"
+NCRACK_SERVICES_URL_CN="$NCRACK_SERVICES_URL"
+
+# GeoLite2 databases require a MaxMind account/license key.
+# Place GeoLite2-ASN.mmdb and GeoLite2-City.mmdb under /data/GeoLite2 manually,
+# or set these variables to your own download URLs.
+GEO_ASN_URL=""
+GEO_CITY_URL=""
+GEO_ASN_URL_CN=""
+GEO_CITY_URL_CN=""
+
 GET_PIP_SCRIPT="https://bootstrap.pypa.io/pip/3.6/get-pip.py"
+GET_PIP_SCRIPT_CN="$GET_PIP_SCRIPT"
 
 #-----------------------------
 # Basic utility functions
@@ -242,7 +253,6 @@ download_geolite2() {
     mkdir -p "$GEO_DATA_DIR"
     for db in GeoLite2-ASN.mmdb GeoLite2-City.mmdb; do
         if [ ! -f "$GEO_DATA_DIR/$db" ]; then
-            color_echo $YELLOW "Downloading $db..."
             local geo_url
             if is_cn_env; then
                 case "$db" in
@@ -255,6 +265,13 @@ download_geolite2() {
                     GeoLite2-City.mmdb) geo_url="$GEO_CITY_URL" ;;
                 esac
             fi
+
+            if [ -z "$geo_url" ]; then
+                color_echo $YELLOW "No download URL configured for $db; place it under $GEO_DATA_DIR manually."
+                continue
+            fi
+
+            color_echo $YELLOW "Downloading $db..."
             download_file "$geo_url" "$GEO_DATA_DIR/$db"
         fi
     done
@@ -475,8 +492,7 @@ add_finger() {
     local admin_pass="harrier123"
     local method="old"
     local finger_file="$download_dir/finger.json"
-    local script_url="$ADD_FINGER_SCRIPT_URL"  # URL of the fingerprint-adding script (defined as a global variable)
-    local finger_url="$DEFAULT_FINGER_URL"  # URL of the fingerprint file (defined as a global variable)
+    local script_file="$download_dir/ADD-Harrier-Finger.py"
 
     # Check the /opt/Harrier/misc directory; use /root if it does not exist
     if [ ! -d /opt/Harrier/misc ]; then
@@ -513,16 +529,18 @@ add_finger() {
     finger_file="${user_input:-$finger_file}"
   
 
-    # Download the fingerprint-adding script (if it does not exist)
-    if [ ! -s "$download_dir/ADD-Harrier-Finger.py" ]; then
-        color_echo $YELLOW "ADD-Harrier-Finger.py does not exist, downloading..."
-         download_file "$script_url" "$download_dir/ADD-Harrier-Finger.py"
+    # The fingerprint-adding script and fingerprint data are bundled in the
+    # Harrier repository under misc/ and are expected at /opt/Harrier/misc/.
+    if [ ! -s "$script_file" ]; then
+        color_echo $RED "ADD-Harrier-Finger.py was not found at $script_file."
+        color_echo $RED "It is bundled in the Harrier repository under misc/."
+        exit 1
     fi
 
-    # Download the fingerprint file (if it does not exist or the user specified a new path)
     if [ ! -s "$finger_file" ]; then
-         color_echo $YELLOW "Fingerprint file $finger_file does not exist, downloading..."
-         download_file "$finger_url" "$finger_file"
+        color_echo $RED "Fingerprint file was not found at $finger_file."
+        color_echo $RED "It is bundled in the Harrier repository under misc/finger.json."
+        exit 1
     fi
 
 
@@ -535,7 +553,7 @@ add_finger() {
 
     # Run the fingerprint import
     color_echo $GREEN "Starting to add fingerprints (using file: $finger_file)..."
-    "$python_cmd" "$download_dir/ADD-Harrier-Finger.py" "$target_url" "$admin_user" "$admin_pass" "$method" "$finger_file"
+    "$python_cmd" "$script_file" "$target_url" "$admin_user" "$admin_pass" "$method" "$finger_file"
      if [ $? -eq 0 ];then
         color_echo $GREEN "Fingerprints added successfully."
      else
@@ -738,18 +756,20 @@ check_install_docker_CN(){
     local SAVE_PATH="/opt/docker_tgz"
     mkdir -p $SAVE_PATH
     local DCOKER_VER="docker-27.1.1.tgz"
+    local DOCKER_ARCH=""
     case $CPU_ARCH in
         "arm64" | "aarch64")
-            DOCKER_COMPOSE_URL="https://raw.gitcode.com/msmoshang/arl_files/blobs/362611e3d3d50ddea6c1c179e76364dcb8d317d5/${DCOKER_VER}"
+            DOCKER_ARCH="aarch64"
         ;;
         "x86_64")
-            DOCKER_COMPOSE_URL="https://raw.gitcode.com/msmoshang/arl_files/blobs/2062dee5a2b85f820fc7e56a8e238525a3b06ea3/${DCOKER_VER}"
+            DOCKER_ARCH="x86_64"
         ;;
         *)
             color_echo $RED "Unsupported CPU architecture: $CPU_ARCH"
             exit 1
         ;;
     esac
+    DOCKER_COMPOSE_URL="https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/${DCOKER_VER}"
 if ! command -v docker &> /dev/null; then
   while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     ATTEMPT=$((attempt + 1))
@@ -815,11 +835,11 @@ check_install_docker-compose_CN() {
         OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
         case "$CPU_ARCH" in
-            "x86_64")
-                DOCKER_COMPOSE_URL="https://raw.gitcode.com/msmoshang/arl_files/blobs/72eb38523db2f2c0b9645b2597d3ed9c9e778c7e/docker-compose-${OS}-${CPU_ARCH}"
+            "x86_64"|"amd64")
+                DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-${OS}-x86_64"
             ;;
             "arm64" | "aarch64")
-                DOCKER_COMPOSE_URL="https://raw.gitcode.com/msmoshang/arl_files/blobs/91c90fdb2223045dcac604736d5428d1ae40d018/docker-compose-${OS}-${CPU_ARCH}"
+                DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-${OS}-aarch64"
             ;;
             *)
                 color_echo $RED "Unsupported CPU architecture: $CPU_ARCH"
@@ -911,13 +931,12 @@ install_harrier_common() {
         sudo systemctl start "$svc"
     done
 
-    # Clone Harrier and Harrier-NPoC (choose the source based on network environment)
-    local harrier_repo="https://github.com/msmoshang/Harrier"
-    local harrier_npoc_repo="https://github.com/Aabyss-Team/Harrier-NPoC"
+    # Clone Harrier (this repo) and the NPoC plugin package (original upstream)
+    local harrier_repo="$HARRIER_REPO"
+    local harrier_npoc_repo="$HARRIER_NPOC_REPO"
 
     if is_cn_env; then
-        harrier_repo="https://gitee.com/Aabyss-Team/Harrier"
-        harrier_npoc_repo="https://gitee.com/ms1125/Harrier-NPoC"
+        harrier_npoc_repo="https://gitee.com/ms1125/ARL-NPoC"
     fi
 
     if [ ! -d "$HARRIER_DIR" ]; then
@@ -1173,14 +1192,14 @@ docker_install_menu() {
 
     case "$version_choice" in
         1)
-        color_echo $YELLOW "Cloning the Harrier-docker project..."
+        color_echo $YELLOW "Cloning the Harrier project..."
         cd /opt/ || exit
-        if [ ! -d Harrier-docker ]; then
-          git clone https://github.com/honmashironeko/Harrier-docker
+        if [ ! -d Harrier ]; then
+          git clone "$HARRIER_REPO"
         fi
-        cd Harrier-docker || exit
-        chmod +x setup_docker.sh
-        bash setup_docker.sh
+        cd Harrier/docker || exit
+        docker volume create harrier_db
+        docker compose up -d
         ;;
     *)
         color_echo $RED "Invalid input, please choose again."
