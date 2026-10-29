@@ -1,5 +1,7 @@
 import bson
 import re
+from urllib.parse import urlparse
+
 from app import utils
 from app.modules import TaskStatus, TaskTag, TaskType, CeleryAction
 
@@ -16,6 +18,21 @@ def target2list(target):
     return target_lists
 
 
+def normalize_target(target):
+    """
+    Accept URL targets such as ``http://example.com/path`` and reduce them to
+    a bare hostname so domain/IP tasks can be issued from a pasted URL.
+    """
+    target = target.strip()
+    if "://" in target:
+        parsed = urlparse(target)
+        hostname = parsed.hostname
+        if hostname:
+            return hostname.lower()
+
+    return target.rstrip("/")
+
+
 def get_ip_domain_list(target):
     target_lists = target2list(target)
     ip_list = set()
@@ -23,6 +40,8 @@ def get_ip_domain_list(target):
     for item in target_lists:
         if not item:
             continue
+
+        item = normalize_target(item)
 
         if utils.is_vaild_ip_target(item):
             if not utils.not_in_black_ips(item):
