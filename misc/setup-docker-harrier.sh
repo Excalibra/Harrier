@@ -36,7 +36,7 @@ systemctl start docker
 cd /opt/
 if [ ! -d Harrier ]; then
   echo "git clone Harrier proj"
-  git clone https://github.com/TophantTechnology/Harrier
+  git clone https://github.com/Excalibra/Harrier
 fi
 cd Harrier/docker
 
