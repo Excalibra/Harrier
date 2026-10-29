@@ -16,7 +16,7 @@ authorizations = {
 }
 
 api = Api(harrier_app, prefix="/api", doc="/api/doc", title='Harrier backend API', authorizations=authorizations,
-          description='Harrier (Asset Reconnaissance Lighthouse) asset reconnaissance system', security="ApiKeyAuth", version="2.6.2")
+          description='Harrier attack surface reconnaissance and asset discovery system', security="ApiKeyAuth", version="2.6.2")
 
 api.add_namespace(routes.task_ns)
 api.add_namespace(routes.site_ns)
