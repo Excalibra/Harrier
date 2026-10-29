@@ -33,8 +33,8 @@ COPY docker/worker/wait-for-it.sh /usr/bin/wait-for-it.sh
 COPY docker/ncrack /usr/local/bin/ncrack
 COPY docker/ncrack-services /usr/local/share/ncrack/ncrack-services
 ## Copy NPoC and install it
-COPY docker/ARL-NPoC/ /opt/ARL-NPoC/
-WORKDIR /opt/ARL-NPoC/
+COPY docker/Harrier-NPoC/ /opt/Harrier-NPoC/
+WORKDIR /opt/Harrier-NPoC/
 ENV LANG en_US.UTF-8
 RUN pip3.6 install -e .
 
@@ -52,7 +52,7 @@ RUN pip3.6 install -r requirements.txt
 
 
 ## Install NPoC dependencies
-WORKDIR /opt/ARL-NPoC/
+WORKDIR /opt/Harrier-NPoC/
 RUN pip3.6 install -r requirements.txt
 
 
@@ -73,8 +73,9 @@ COPY nuclei-custom/ /opt/nuclei-custom/
 RUN mkdir -p /root/nuclei-templates/custom \
     && cp /opt/nuclei-custom/*.yaml /root/nuclei-templates/custom/
 
-## Install WIH
-RUN wget https://github.com/Aabyss-Team/arl_files/raw/master/wih/wih_linux_amd64 -O /usr/bin/wih && chmod +x /usr/bin/wih
+## Install WIH (WebInfoHunter)
+## The prebuilt binary is expected in this project's releases; adjust the URL if hosted elsewhere.
+RUN wget https://github.com/Excalibra/Harrier/releases/download/tools/wih_linux_amd64 -O /usr/bin/wih && chmod +x /usr/bin/wih
 RUN wih --version
 
 ## Switch working directory
@@ -82,5 +83,5 @@ WORKDIR /code
 
 ## Self-test
 RUN cp app/config.yaml.example app/config.yaml
-RUN env FLASK_APP=app.main:arl_app python3.6 -m flask routes
+RUN env FLASK_APP=app.main:harrier_app python3.6 -m flask routes
 RUN python3 -m app.celerytask
