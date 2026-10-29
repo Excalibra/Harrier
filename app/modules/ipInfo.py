@@ -76,12 +76,18 @@ class IPInfo(BaseInfo):
 
 
 class PortInfo(BaseInfo):
-    def __init__(self, port_id, service_name = "", version = "", protocol = "tcp", product=""):
+    def __init__(self, port_id, service_name = "", version = "", protocol = "tcp", product="",
+                 title="", host="", uri="", frameworks=None):
         self.port_id = port_id
         self.service_name = service_name
         self.version = version
         self.protocol = protocol
         self.product = product
+        # Extra fields produced by the gogo scan engine (absent in nmap output)
+        self.title = title
+        self.host = host
+        self.uri = uri
+        self.frameworks = frameworks or []
 
     def __eq__(self, other):
         if isinstance(other, PortInfo):
@@ -100,6 +106,14 @@ class PortInfo(BaseInfo):
             "protocol": self.protocol,
             "product": self.product
         }
+        if self.title:
+            item["title"] = self.title
+        if self.host:
+            item["host"] = self.host
+        if self.uri:
+            item["uri"] = self.uri
+        if self.frameworks:
+            item["frameworks"] = self.frameworks
         return item
 
 
