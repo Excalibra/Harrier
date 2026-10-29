@@ -108,7 +108,7 @@ Screenshots are not currently bundled in this repository. If you add them, place
 | Nuclei self-update | Bottom-right "Nuclei · Update" widget or `POST /api/update/nuclei/`; commit with `docker commit harrier_worker harrier:latest` to survive recreation |
 | Image build | Requires the NPoC plugin repository and GeoLite2 databases; not vendored; the prebuilt image is the supported path for now |
 | UI language | English-only; bundled frontend Chinese strings are translated at runtime |
-| Licence | MIT. See `LICENSE` and |
+| Licence | MIT. See `LICENSE` |
 
 ## 8# Forgotten password reset
 
