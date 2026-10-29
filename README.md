@@ -79,15 +79,23 @@ Screenshots are not currently bundled in this repository. If you add them, place
 - Site page
   <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/aa10f27d-c17f-4bb9-816e-4b576e8e556d" />
 
-
-
   
 - Asset monitoring page
+  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/4c6c1db1-1097-4992-9a60-2e52c1e77b86" />
 
 
 - Policy page
+  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/ba6cff87-0445-4428-8286-2b26c5224cc5" />
+
+
 - Scheduled tasks
+  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/b4e31a19-ebdb-4e02-b220-9ce8685e46eb" />
+
+
 - GitHub monitoring task
+  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/4148d573-d977-4d4a-8ccd-e9be9492204e" />
+
+
 
 ## 6# Task option descriptions
 
