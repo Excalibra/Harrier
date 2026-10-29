@@ -1,0 +1,90 @@
+volumes:
+  harrier_db:
+    external: true
+
+services:
+    web:
+        image: harrier:latest
+        container_name: harrier_web
+        restart: unless-stopped
+        depends_on:
+          - mongodb
+          - rabbitmq
+        ports:
+          #http is disabled by default
+          #- "5003:80"
+          - "5003:443"
+        volumes:
+          - ./harrier_web.log:/code/harrier_web.log
+          - ./config-docker.yaml:/code/app/config.yaml
+          - ./image:/code/app/tmp_screenshot
+          - ./poc:/opt/ARL-NPoC/xing/plugins/upload_poc
+          - ./frontend:/code/frontend
+          - ../app:/code/app
+        entrypoint: ["sh", "-c", "gen_crt.sh; nginx; wait-for-it.sh mongodb:27017; wait-for-it.sh rabbitmq:5672; gunicorn -b 0.0.0.0:5003 app.main:harrier_app -w 3 --access-logfile harrier_web.log --access-logformat '%({x-real-ip}i)s %(l)s %(u)s %(t)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\"'"]
+        environment:
+          - LANG=en_US.UTF-8
+          - TZ=Asia/Shanghai
+
+    worker:
+        image: harrier:latest
+        container_name: harrier_worker
+        restart: unless-stopped
+        depends_on:
+          - mongodb
+          - rabbitmq
+        volumes:
+          - ./harrier_worker.log:/code/harrier_worker.log
+          - ./config-docker.yaml:/code/app/config.yaml
+          - ./image:/code/app/tmp_screenshot
+          - ./poc:/opt/ARL-NPoC/xing/plugins/upload_poc
+          - ../app:/code/app
+        entrypoint: ["sh", "-c", "wait-for-it.sh mongodb:27017; wait-for-it.sh rabbitmq:5672;
+        celery -A app.celerytask.celery worker -l info -Q harriergithub -n harriergithub -c 2 -O fair -f harrier_worker.log &
+         celery -A app.celerytask.celery worker -l info -Q harriertask -n harriertask -c 2 -O fair -f harrier_worker.log"]
+
+        environment:
+          - LANG=en_US.UTF-8
+          - TZ=Asia/Shanghai
+
+    scheduler:
+      image: harrier:latest
+      container_name: harrier_scheduler
+      restart: unless-stopped
+      depends_on:
+        - mongodb
+        - rabbitmq
+      volumes:
+        - ./config-docker.yaml:/code/app/config.yaml
+        - ../app:/code/app
+      entrypoint: [ "sh", "-c", "wait-for-it.sh mongodb:27017; wait-for-it.sh rabbitmq:5672; python3.6 -m app.scheduler" ]
+      environment:
+        - LANG=en_US.UTF-8
+        - TZ=Asia/Shanghai
+
+    mongodb:
+        image: mongo:4.0.27
+        container_name: harrier_mongodb
+        restart: always
+        volumes:
+          - harrier_db:/data/db
+          - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+        environment:
+          - MONGO_INITDB_DATABASE=harrier
+          - MONGO_INITDB_ROOT_USERNAME=admin
+          - MONGO_INITDB_ROOT_PASSWORD=admin
+
+
+    rabbitmq:
+        image: rabbitmq:3.13.1-management-alpine
+        container_name: harrier_rabbitmq
+        restart: always
+        environment:
+          - RABBITMQ_DEFAULT_PASS=harrierpassword
+          - RABBITMQ_DEFAULT_USER=harrier
+          - RABBITMQ_DEFAULT_VHOST=harriervhost
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "1M"
+            max-file: "10"

@@ -1,0 +1,146 @@
+
+CELERY:
+  BROKER_URL : "amqp://harrier:harrierpassword@localhost:5672/harriervhost"
+
+
+MONGO:
+  URI : 'mongodb://127.0.0.1:27017/'
+  DB : 'harrier'
+
+
+
+# Collect domains using third-party APIs
+# Test command: python3.6 -m test.test_query_plugin [source1] [source2]
+# Domain query plugin configuration. The enable field controls whether each plugin
+# is enabled individually; a plugin without this field is enabled by default
+QUERY_PLUGIN:
+  alienvault:
+    enable: true
+  certspotter: # https://www.certspotter.com/
+    after_id: 1
+    max_page: 3
+    enable: true
+  crtsh:
+    enable: true
+  fofa:  # fofa key is configured above
+    enable: true
+  hunter_qax: # Website: https://hunter.qianxin.com/
+    api_key: ""
+    page_size: 100
+    max_page: 5
+    enable: false
+  passivetotal: # Register your own key at https://community.riskiq.com/ and replace it here
+    auth_email: ""
+    auth_key: ""
+    enable: false
+  quake_360: # Website: https://quake.360.cn/
+    quake_token: ""
+    max_size: 500
+    enable: false
+  rapiddns:
+    enable: true
+  securitytrails: # Website: https://securitytrails.com/
+    api_key: ""
+    enable: false
+  virustotal: # Website: https://www.virustotal.com/gui/
+    api_key: ""
+    enable: false
+  zoomeye:
+    api_key: ""
+    max_page: 20
+    enable: false
+  chaos:
+    api_key: ""
+    enable: false
+
+# GeoIP database file configuration
+GEOIP:
+  CITY: '/data/GeoLite2/GeoLite2-City.mmdb'
+  ASN: '/data/GeoLite2/GeoLite2-ASN.mmdb'
+
+
+# Fofa API configuration
+FOFA:
+  URL: "https://fofa.info"
+  EMAIL: ""
+  KEY: ""
+  MAX_PAGE: 5
+  PAGE_SIZE: 2000
+
+#*** Monitoring task notification configuration ****
+# Monitoring task notifications; supports DingTalk, Feishu, WeCom (WeChat Work), and email
+# If notifications are not needed, leave all options empty
+# DingTalk notification configuration
+# To add a DingTalk bot, see
+DINGDING:
+  SECRET: ""
+  ACCESS_TOKEN: ""
+
+
+# Feishu notification configuration; signature verification must be set
+#https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot
+FEISHU:
+  WEBHOOK_URL: ""
+  SECRET: ""
+
+
+# WeCom (WeChat Work) notification configuration
+#https://open.work.weixin.qq.com/help2/pc/14931
+WXWORK:
+  WEBHOOK_URL: ""
+
+
+# Email sending configuration
+EMAIL:
+  HOST: ""
+  PORT: ""
+  USERNAME: ""
+  PASSWORD: ""
+  TO: ""
+
+# Monitoring task WEBHOOK configuration
+# After IP/domain monitoring and site monitoring finish, JSON data is POSTed to the URL below
+# A Token field is included in the request header for authentication
+WEBHOOK:
+  URL: ""
+  TOKEN: ""
+
+
+# GitHub search TOKEN
+GITHUB:
+  TOKEN: ""
+
+# Proxy configuration, e.g. "http://127.0.0.1:8080"; port scanning does not go through the proxy
+PROXY:
+  HTTP_URL: ""
+
+Harrier:
+  AUTH: true
+  # API authentication key; visit api/doc for the documentation
+  API_KEY: ""
+  BLACK_IPS:
+    - 127.0.0.0/8
+    - 0.0.0.0/8
+    - 172.16.0.0/12
+    - 100.64.0.0/10
+    #- 10.0.0.0/8
+    #- 192.168.0.0/16
+  ## Forbidden domains; must not be an empty array
+  FORBIDDEN_DOMAINS:
+    #- edu.cn
+    #- org.cn
+    #- gov.cn
+  # Ports corresponding to the frontend test options
+  PORT_TOP_10: "80,443,8443,8080,8081,8888,8089,5000,5001,8085,800,81,9000,88,8001,8090"
+  # Domain brute-force dictionary for the frontend large-dictionary option; empty means system default
+  DOMAIN_DICT: ""
+  # File leak dictionary; empty means system default
+  FILE_LEAK_DICT: ""
+
+  # Domain brute-force concurrency
+  DOMAIN_BRUTE_CONCURRENT: 300
+  # Concurrency for combination-generated domain brute-forcing
+  ALT_DNS_CONCURRENT: 1500
+
+
+

@@ -1,0 +1,357 @@
+/* Harrier UI theme — frosted-glass laboratory aesthetic.
+   Pure CSS overlay on top of the compiled ant-design-vue bundle. */
+
+:root {
+  --pd-bg: #070b10;
+  --pd-glass: rgba(20, 30, 40, 0.34);
+  --pd-glass-light: rgba(30, 42, 54, 0.30);
+  --pd-glass-border: rgba(160, 220, 230, 0.22);
+  --pd-accent: #2dd4d8;
+  --pd-accent-dim: rgba(45, 212, 216, 0.16);
+  --pd-text: #dce8ee;
+  --pd-text-dim: #93a8b3;
+  --pd-blur: saturate(170%) blur(24px) brightness(1.12);
+}
+
+/* ---- backdrop: deep slate with cool clinical glows ---- */
+html {
+  background: var(--pd-bg) !important;
+}
+/* #app and .ant-layout stay transparent so the body glow shows through */
+#app, .ant-layout {
+  background: transparent !important;
+}
+body {
+  background-image:
+    radial-gradient(760px 520px at 72% 12%, rgba(45, 212, 216, 0.40), transparent 70%),
+    radial-gradient(900px 640px at 38% 62%, rgba(60, 160, 200, 0.26), transparent 72%),
+    radial-gradient(520px 420px at 10% 92%, rgba(70, 150, 210, 0.32), transparent 70%),
+    radial-gradient(480px 380px at 88% 84%, rgba(190, 240, 245, 0.14), transparent 70%),
+    radial-gradient(380px 300px at 55% 30%, rgba(45, 212, 216, 0.16), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(140, 210, 220, 0.035) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(90deg, rgba(140, 210, 220, 0.035) 0 1px, transparent 1px 44px),
+    linear-gradient(165deg, #080c12 0%, #0a1119 45%, #0b141d 100%) !important;
+  background-attachment: fixed !important;
+}
+body, .ant-layout, .ant-table, .ant-card, .ant-form, .ant-modal {
+  color: var(--pd-text);
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- layout surfaces ---- */
+.ant-layout-header, header.ant-layout-header {
+  background: rgba(16, 24, 32, 0.30) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border-bottom: 1px solid var(--pd-glass-border);
+}
+.ant-layout-sider, .ant-layout-sider-children {
+  background:
+    linear-gradient(180deg, rgba(45, 212, 216, 0.06), transparent 260px),
+    rgba(13, 20, 27, 0.55) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border-right: 1px solid var(--pd-glass-border);
+}
+.ant-layout-content {
+  background: transparent !important;
+}
+
+/* ---- menu ---- */
+.ant-menu, .ant-menu-sub, .ant-menu-inline {
+  background: transparent !important;
+  color: var(--pd-text-dim);
+}
+.ant-menu-item > a, .ant-menu-submenu-title, .ant-menu-item {
+  color: var(--pd-text-dim) !important;
+  letter-spacing: 0.02em;
+}
+.ant-menu-item-selected, .ant-menu-item-active,
+.ant-menu-submenu-selected, .ant-menu-submenu-active {
+  background: var(--pd-accent-dim) !important;
+}
+.ant-menu-item-selected > a, .ant-menu-item > a:hover,
+.ant-menu-submenu-title:hover {
+  color: var(--pd-accent) !important;
+}
+.ant-menu-inline .ant-menu-item::after {
+  border-right: 2px solid var(--pd-accent) !important;
+}
+
+/* ---- cards & panels: frosted glass ---- */
+.ant-card, .ant-collapse, .ant-collapse > .ant-collapse-item {
+  background: var(--pd-glass) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border: 1px solid var(--pd-glass-border) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 34px rgba(0, 0, 0, 0.38);
+}
+.ant-card-head {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-bottom: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text);
+}
+.ant-card-head-title, .ant-card-extra { color: var(--pd-text) !important; }
+.ant-collapse-header { color: var(--pd-text) !important; }
+.ant-collapse-content {
+  background: transparent !important;
+  border-top: 1px solid var(--pd-glass-border) !important;
+}
+
+/* ---- page content wrapped in a glass panel ---- */
+.table-wrap {
+  background: var(--pd-glass) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border: 1px solid rgba(140, 210, 220, 0.14);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 40px rgba(0, 0, 0, 0.4);
+  margin: 14px 18px;
+}
+.page-title {
+  text-shadow: 0 0 24px rgba(45, 212, 216, 0.25);
+}
+
+/* ---- tables ---- */
+.ant-table, .ant-table-content, .ant-table-body, .ant-table-placeholder {
+  background: transparent !important;
+  color: var(--pd-text);
+}
+.ant-table-thead > tr > th {
+  background: rgba(45, 212, 216, 0.10) !important;
+  color: var(--pd-text) !important;
+  border-bottom: 1px solid var(--pd-glass-border) !important;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.ant-table-tbody > tr > td {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(120, 200, 210, 0.06) !important;
+  color: var(--pd-text) !important;
+}
+.ant-table-tbody > tr:hover > td {
+  background: rgba(45, 212, 216, 0.06) !important;
+}
+.ant-table-bordered .ant-table-thead > tr > th,
+.ant-table-bordered .ant-table-tbody > tr > td {
+  border-right: 1px solid rgba(120, 200, 210, 0.06) !important;
+}
+.ant-table-fixed, .ant-table-fixed-left, .ant-table-fixed-right {
+  background: rgba(13, 19, 25, 0.92) !important;
+}
+
+/* ---- buttons ---- */
+.ant-btn {
+  background: rgba(28, 38, 48, 0.5) !important;
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text) !important;
+  border-radius: 6px;
+}
+.ant-btn:hover, .ant-btn:focus {
+  border-color: var(--pd-accent) !important;
+  color: var(--pd-accent) !important;
+}
+.ant-btn-primary {
+  background: var(--pd-accent-dim) !important;
+  border-color: var(--pd-accent) !important;
+  color: var(--pd-accent) !important;
+}
+.ant-btn-danger, .ant-btn-dangerous {
+  border-color: rgba(255, 99, 99, 0.5) !important;
+  color: #ff7a7a !important;
+}
+
+/* ---- inputs & selects ---- */
+.ant-input, .ant-input-number-input, .ant-select-selection,
+.ant-input-affix-wrapper, .ant-time-picker-input, textarea.ant-input {
+  background: rgba(10, 16, 22, 0.6) !important;
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text) !important;
+  border-radius: 6px;
+}
+.ant-input::placeholder { color: #5d717c !important; }
+.ant-input:focus, .ant-select-focused .ant-select-selection,
+.ant-select-selection:hover {
+  border-color: var(--pd-accent) !important;
+  box-shadow: 0 0 0 2px rgba(45, 212, 216, 0.12) !important;
+}
+.ant-select-arrow, .ant-input-prefix { color: var(--pd-text-dim) !important; }
+
+/* search-field group addons (the operator dropdowns next to inputs) */
+.ant-input-group-addon {
+  background: rgba(20, 28, 36, 0.5) !important;
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text-dim) !important;
+}
+.ant-input-group-addon .ant-select,
+.ant-input-group-addon .ant-select-selection {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.ant-input-group-addon .ant-select-selection-selected-value {
+  color: var(--pd-text-dim) !important;
+}
+
+/* disabled selects render light gray in the bundle — keep them on-theme */
+.ant-select-disabled .ant-select-selection,
+.ant-select-selection--disabled,
+.ant-input[disabled], .ant-input-disabled {
+  background: rgba(20, 28, 36, 0.45) !important;
+  color: #5d717c !important;
+  border: 1px solid var(--pd-glass-border) !important;
+}
+.ant-select-selection__rendered, .ant-select-selection-selected-value {
+  color: var(--pd-text) !important;
+}
+.ant-select-selection__placeholder { color: #5d717c !important; }
+.ant-select-selection--multiple .ant-select-selection__choice {
+  background: var(--pd-accent-dim) !important;
+  border-color: var(--pd-glass-border) !important;
+  color: var(--pd-accent) !important;
+}
+
+/* ---- dropdowns / popovers / modals ---- */
+.ant-select-dropdown, .ant-dropdown-menu, .ant-calendar-picker-container,
+.ant-popover-inner, .ant-tooltip-inner, .ant-message-notice-content,
+.ant-modal-content, .ant-modal-confirm-body .ant-modal-confirm-content {
+  background: rgba(18, 28, 38, 0.72) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border: 1px solid var(--pd-glass-border);
+  border-radius: 8px !important;
+  color: var(--pd-text);
+}
+.ant-select-dropdown-menu-item, .ant-dropdown-menu-item {
+  color: var(--pd-text-dim) !important;
+}
+.ant-select-dropdown-menu-item-active,
+.ant-select-dropdown-menu-item-selected,
+.ant-dropdown-menu-item:hover {
+  background: var(--pd-accent-dim) !important;
+  color: var(--pd-accent) !important;
+}
+.ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--pd-glass-border) !important;
+}
+.ant-modal-title { color: var(--pd-text) !important; }
+.ant-modal-body, .ant-modal-footer {
+  background: transparent !important;
+  color: var(--pd-text);
+}
+.ant-modal-footer { border-top: 1px solid var(--pd-glass-border) !important; }
+.ant-modal-close-x, .ant-popover-inner-content, .ant-popover-title {
+  color: var(--pd-text) !important;
+}
+
+/* ---- tabs ---- */
+.ant-tabs-bar { border-bottom: 1px solid var(--pd-glass-border) !important; }
+.ant-tabs-tab { color: var(--pd-text-dim) !important; letter-spacing: 0.03em; }
+.ant-tabs-tab-active { color: var(--pd-accent) !important; }
+.ant-tabs-ink-bar { background: var(--pd-accent) !important; }
+
+/* ---- form labels, descriptions, stats ---- */
+.ant-form-item-label > label, .ant-form-item, .ant-descriptions-item-label,
+.ant-descriptions-item-content, label {
+  color: var(--pd-text-dim) !important;
+}
+.ant-statistic-title { color: var(--pd-text-dim) !important; }
+.ant-statistic-content { color: var(--pd-accent) !important; }
+
+/* ---- pagination ---- */
+.ant-pagination-item, .ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-item-link {
+  background: transparent !important;
+  border: 1px solid var(--pd-glass-border) !important;
+}
+.ant-pagination-item a, .ant-pagination-item-link { color: var(--pd-text-dim) !important; }
+.ant-pagination-item-active { border-color: var(--pd-accent) !important; }
+.ant-pagination-item-active a { color: var(--pd-accent) !important; }
+
+/* ---- tags / badges / alerts ---- */
+.ant-tag {
+  background: var(--pd-accent-dim) !important;
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text) !important;
+  border-radius: 4px;
+}
+.ant-badge-count { background: var(--pd-accent) !important; color: #06222a !important; }
+.ant-alert { border-radius: 6px !important; }
+
+/* ---- breadcrumbs / dividers / misc text ---- */
+.ant-breadcrumb, .ant-breadcrumb a, .ant-breadcrumb > span:last-child {
+  color: var(--pd-text-dim) !important;
+}
+.ant-divider { background: var(--pd-glass-border) !important; }
+h1, h2, h3, h4, p, span, td, th, div { scrollbar-color: #2a3a44 transparent; }
+a { color: var(--pd-accent); }
+a:hover { color: #6ee7ea; }
+
+/* ---- progress & loading ---- */
+.ant-progress-bg, .ant-progress-circle-path { stroke: var(--pd-accent) !important; }
+.ant-spin-dot-item { background: var(--pd-accent) !important; }
+
+/* ---- scrollbars ---- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #24333d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #33505e; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- login page ---- */
+.login, .login-container, .login-box {
+  background: transparent !important;
+}
+.login .login-wrap {
+  background: rgba(16, 24, 32, 0.55) !important;
+  backdrop-filter: saturate(140%) blur(18px);
+  -webkit-backdrop-filter: saturate(140%) blur(18px);
+  border: 1px solid var(--pd-glass-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+.login .login-wrap .logo-word,
+.login .login-wrap label,
+.login .login-wrap .ftColor,
+.login .login-wrap .copy-right,
+.login-wrap .logo-word,
+.login-wrap label {
+  color: var(--pd-text) !important;
+}
+.login-wrap .logo-word {
+  letter-spacing: 0.12em;
+  color: #eef7f9 !important;
+  text-shadow: 0 0 22px rgba(45, 212, 216, 0.45);
+}
+/* the logo wordmark is an SVG <text> with a dark fill in the bundle */
+.login-wrap svg text {
+  fill: #eef7f9 !important;
+  filter: drop-shadow(0 0 14px rgba(45, 212, 216, 0.4));
+}
+.login .copy-right { color: var(--pd-text-dim) !important; }
+/* recolor the particle field to the clinical accent */
+#particles-js canvas {
+  filter: hue-rotate(205deg) saturate(1.3) brightness(1.1);
+  opacity: 0.45;
+}
+
+/* ---- Harrier's own injected widgets: match the theme ---- */
+#harrier-page-hint {
+  background: rgba(16, 30, 36, 0.9) !important;
+  backdrop-filter: var(--pd-blur);
+  -webkit-backdrop-filter: var(--pd-blur);
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text) !important;
+}
+#harrier-update-widget, [id^="harrier-report"] {
+  background: rgba(16, 24, 32, 0.9) !important;
+  border: 1px solid var(--pd-glass-border) !important;
+  color: var(--pd-text) !important;
+}

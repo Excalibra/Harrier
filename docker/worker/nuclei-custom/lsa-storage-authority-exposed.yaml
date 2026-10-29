@@ -1,0 +1,49 @@
+id: lsa-storage-authority-exposed
+
+info:
+  name: Broadcom LSI Storage Authority - Exposed Management Interface
+  author: harrier
+  severity: high
+  description: |
+    Broadcom LSI Storage Authority (LSA) RAID management web interface is
+    exposed to the network. This product line is affected by multiple
+    critical vulnerabilities, including CVE-2023-4335 (unauthenticated
+    access to server-side files), CVE-2023-4336 (improper session handling,
+    CVSS 9.8) and CVE-2023-4337 (cookies without Secure attribute).
+    Access should be restricted to trusted administrators.
+  reference:
+    - https://www.broadcom.com/support/resources/product-security-center
+  classification:
+    cve-id:
+      - CVE-2023-4335
+      - CVE-2023-4336
+      - CVE-2023-4337
+    cwe-id:
+      - CWE-306
+  metadata:
+    vendor: broadcom
+    product: lsi_storage_authority
+  tags: cve,exposure,lsi,broadcom
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "<title>LSI STORAGE AUTHORITY</title>"
+        case-insensitive: true
+
+      - type: status
+        status:
+          - 200
+
+    extractors:
+      - type: regex
+        part: header
+        regex:
+          - "Server: [^\\r\\n]+"
