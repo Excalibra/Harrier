@@ -69,14 +69,21 @@ The quick-start path requires Docker and Docker Compose. For source-based develo
 Screenshots are not currently bundled in this repository. If you add them, place them under `image/` and reference them here, for example:
 
 - Login page
-  <img width="1320" height="651" alt="image" src="https://github.com/user-attachments/assets/f7f3d94a-2883-4201-a34b-4e9fafc7abef" />
+  <img width="1907" height="933" alt="image" src="https://github.com/user-attachments/assets/faae5eed-7d09-4a8f-88d8-41698914d76e" />
 
 
 - Task page
+  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/2bf4edae-950a-4844-a006-1c710d6cdd68" />
 
 
 - Site page
+  
+
+
+  
 - Asset monitoring page
+
+
 - Policy page
 - Scheduled tasks
 - GitHub monitoring task
