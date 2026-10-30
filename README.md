@@ -73,7 +73,7 @@ Screenshots are not currently bundled in this repository. If you add them, place
 
 
 - Task page
-  <img width="1920" height="970" alt="image" src="https://github.com/user-attachments/assets/2bf4edae-950a-4844-a006-1c710d6cdd68" />
+  <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/44b67e56-9825-4ce4-b46a-a411357df349" />
 
 
 - Site page
