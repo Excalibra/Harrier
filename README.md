@@ -6,9 +6,10 @@ Attack surface reconnaissance and asset discovery platform. Harrier maps interne
 
 - Harrier is an attack surface reconnaissance and asset discovery platform for mapping internet-facing assets and hunting for weaknesses.
 - Default credentials after a fresh install: `admin` / `harrier123`. Change the password in the UI after first login.
-- The Docker quick-start path uses a prebuilt image and mounts this repository's `app/` and `docker/frontend/` source into the containers.
+- The Docker quick-start path builds the `harrier:latest` image locally and mounts this repository's `app/` and `docker/frontend/` source into the containers.
 - **Self-update**: the bottom-right "Nuclei · Update" widget (or `POST /api/update/nuclei/`) downloads the latest nuclei engine and templates on the worker. To make an update survive `docker compose down` or container recreation, commit it afterwards: `docker commit harrier_worker harrier:latest`.
-- Building a self-contained image from source requires the NPoC plugin repository and GeoLite2 databases, which are not vendored here. The prebuilt image is the supported path for now.
+- The image build downloads NPoC, ncrack, nuclei, WIH and PhantomJS from their upstream sources, so the first build requires internet access and can take several minutes.
+- GeoLite2 databases are optional. To enable IP geolocation, place `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` in `docker/GeoLite2/` before starting the stack.
 - The UI is English-only. The bundled frontend's built-in Chinese strings are translated at runtime.
 - Licence: MIT. See `LICENSE`.
 
@@ -19,12 +20,12 @@ Attack surface reconnaissance and asset discovery platform. Harrier maps interne
 ```bash
 cd docker
 docker volume create harrier_db
-docker compose up -d
+docker compose up -d --build
 ```
 
 Then open `https://<host>:5003` and log in with `admin` / `harrier123` (change it in the UI after first login).
 
-The compose stack uses a prebuilt image and mounts this repository's `app/` and `docker/frontend/` source into the containers, so code changes go live with:
+The compose stack mounts this repository's `app/` and `docker/frontend/` source into the containers, so code changes go live with:
 
 ```bash
 docker compose restart web worker scheduler
@@ -119,10 +120,10 @@ Screenshots are not currently bundled in this repository. If you add them, place
 | Configuration | Description |
 | ------------- | ----------- |
 | Default credentials | `admin` / `harrier123`; change in the UI after first login |
-| Docker compose | `cd docker && docker volume create harrier_db && docker compose up -d` |
+| Docker compose | `cd docker && docker volume create harrier_db && docker compose up -d --build` |
 | Source mounts | Compose mounts `app/` and `docker/frontend/`; restart `web worker scheduler` after code changes |
 | Nuclei self-update | Bottom-right "Nuclei · Update" widget or `POST /api/update/nuclei/`; commit with `docker commit harrier_worker harrier:latest` to survive recreation |
-| Image build | Requires the NPoC plugin repository and GeoLite2 databases; not vendored; the prebuilt image is the supported path for now |
+| Image build | Builds locally and downloads the required upstream tools; optional GeoLite2 databases go in `docker/GeoLite2/` |
 | UI language | English-only; bundled frontend Chinese strings are translated at runtime |
 | Licence | MIT. See `LICENSE` |
 
